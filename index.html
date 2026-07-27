@@ -4,8 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>N Queens Visualizer</title>
+    <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-    
+
+    <div id="container">
+        <div id="input">
+            <label for="inputNum">Queens : </label>
+            <input id="inputNum" type="number" max="12" min="3" >
+        </div>
+        <div id="board">
+            <div class="cells white"> <div class="queen"></div> </div>
+            <div class="cells black"> <div class=""></div> </div>
+            <div class="cells white"> <div class=""></div> </div>
+            <div class="cells black"> <div class=""></div> </div>
+            <div class="cells white"> <div class="queen"></div> </div>
+            <div class="cells black"> <div class=""></div> </div>
+            <div class="cells white"> <div class=""></div> </div>
+            <div class="cells black"> <div class="queen"></div> </div>
+            <div class="cells white"> <div class=""></div> </div>
+        </div>
+    </div>
 </body>
 </html>
