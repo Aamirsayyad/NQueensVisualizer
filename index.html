@@ -7,23 +7,20 @@
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-
+    <h1>N-Queens Visualizer</h1>
     <div id="container">
         <div id="input">
             <label for="inputNum">Queens : </label>
-            <input id="inputNum" type="number" max="12" min="3" >
+            <input id="inputNum" placeholder="4-10" type="number" >
+            <input id="submit" type="submit">
         </div>
+        <p id="error-msg">Hi there is an error in the input</p>
         <div id="board">
-            <div class="cells white"> <div class="queen"></div> </div>
-            <div class="cells black"> <div class=""></div> </div>
-            <div class="cells white"> <div class=""></div> </div>
-            <div class="cells black"> <div class=""></div> </div>
-            <div class="cells white"> <div class="queen"></div> </div>
-            <div class="cells black"> <div class=""></div> </div>
-            <div class="cells white"> <div class=""></div> </div>
-            <div class="cells black"> <div class="queen"></div> </div>
-            <div class="cells white"> <div class=""></div> </div>
+
         </div>
     </div>
+
+
+    <script src="script.js"></script>
 </body>
 </html>
