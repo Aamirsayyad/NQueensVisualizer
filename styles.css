@@ -90,12 +90,30 @@ input[type="number"]::-webkit-outer-spin-button{
     font-weight:bold;
 }
 
+#start-anim{
+    border: none;
+    font-weight: bold;
+    background-color: white;
+    font-size: 1.3em;
+    padding-bottom: 3px;
+    border-radius: 10px;
+    text-align: center;
+    height: 20px;
+    width: 50px;
+    justify-content: center;
+    cursor: pointer;
+}
+#start-anim:active{
+    background-color: rgb(2, 2, 2);
+    color:white
+}
 .cells{
     height:50px;
     width:50px;
     display:flex;
     align-items:center;
     justify-content:center;
+    user-select: none;
 }
 
 .white{
@@ -103,19 +121,30 @@ input[type="number"]::-webkit-outer-spin-button{
 }
 
 .black{
-    background-color:rgb(2,124,6);
+    background-color:rgb(8, 245, 16);
 }
 
 .queen{
     display:flex;
-    height:80%;
-    width:80%;
+    height:100%;
+    width:100%;
     background-image:url("Images/Queen png.png");
     background-position:center;
     background-repeat:no-repeat;
     background-size:contain;
 }
-
+.showFlex{
+    display: flex;
+}
 .hide{
     display:none;
+}
+.danger{
+    background-color:rgb(184, 66, 66);
+}
+.occupiedWhite{
+    background-color:rgb(131, 131, 130);
+}
+.occupiedBlack{
+    background-color:rgb(14, 55, 1);
 }
