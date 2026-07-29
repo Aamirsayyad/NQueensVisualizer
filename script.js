@@ -4,10 +4,8 @@ const ErorrDisplay = document.getElementById("error-msg");
 const BoardDisplay = document.getElementById("board");
 const StartButton = document.getElementById("start-anim");
 let BoardMatrix = [];
+let CurrentQueens=[];
 let N = BoardMatrix.length;
-
-
-
 
 //Enter Event Listener
 InputElement.addEventListener("keydown", (event) => {
@@ -38,10 +36,12 @@ function validateInput() {
         buildBoard();
     }
 }
+
 //build the inital board
 function buildBoard() {
     BoardDisplay.replaceChildren("");
     BoardMatrix = [];
+    CurrentQueens=[];
     const n = InputElement.value;
     let str = "";
     for (let i = 0; i < n; i++) {
@@ -77,29 +77,51 @@ function addCellEventListeners() {
         }
     }
 }
+
 function addQueenToggleListener(target, m, n) {
     target.addEventListener("click", (event) => {
         queenSight(target, m, n);
     })
 }
+
 function queenSight(target, m, n) {
     target.classList.toggle("queen");
     if (target.classList.contains("queen")) {
-        isOccupied(true, m, n);
+        CurrentQueens.push([m,n]);
+        // isOccupied(true, m, n);
     }
     else {
-        isOccupied(false, m, n);
+        const idx=CurrentQueens.findIndex((queen)=>{
+            return queen[0]===m && queen[1]===n;
+        });
+        if(idx!==-1){
+            CurrentQueens.splice(idx,1);
+        }
+        // isOccupied(false, m, n);
     }
+    for(let i=0;i<N;i++){
+        for(let j=0;j<N;j++){
+            BoardMatrix[i][j].classList.remove("occupiedWhite");
+            BoardMatrix[i][j].classList.remove("occupiedBlack");
+            BoardMatrix[i][j].classList.remove("danger");
+        }
+    }
+    CurrentQueens.forEach((value)=>{
+        const m=value[0];
+        const n=value[1];
+        isOccupied(m,n);
+        console.log(BoardMatrix);
+    })
+
 }
 
-
-function isOccupied(flag, m, n) {
+function isOccupied( m, n) { //flag: A boolean for presence of queen ,(m,n): position of cell
 
     let i = m + 1;
     let j = n + 1;
     //expand bottom right diagonally
     while (i < N && j < N) {
-        validateFlag(flag, i, j);
+        validateFlag( i, j);
         i++;
         j++;
 
@@ -109,7 +131,7 @@ function isOccupied(flag, m, n) {
 
     //expand top left diagonally
     while (i >= 0 && j >= 0) {
-        validateFlag(flag, i, j);
+        validateFlag(i, j);
         i--;
         j--;
     }
@@ -118,7 +140,7 @@ function isOccupied(flag, m, n) {
     j = n + 1;
     //expand top right diagonally
     while (i >= 0 && j < N) {
-        validateFlag(flag, i, j);
+        validateFlag(i, j);
         i--;
         j++;
     }
@@ -127,7 +149,7 @@ function isOccupied(flag, m, n) {
     j = n - 1;
     //expand  bottom left diagonally
     while (i < N && j >= 0) {
-        validateFlag(flag, i, j);
+        validateFlag( i, j);
         i++;
         j--;
     }
@@ -136,7 +158,7 @@ function isOccupied(flag, m, n) {
     j = n;
     //expand vertically downwards
     while (i < N) {
-        validateFlag(flag, i, j);
+        validateFlag( i, j);
         i++;
     }
 
@@ -144,7 +166,7 @@ function isOccupied(flag, m, n) {
     j = n;
     //expand vertically upwards
     while (i >= 0) {
-        validateFlag(flag, i, j);
+        validateFlag( i, j);
         i--;
     }
 
@@ -152,7 +174,7 @@ function isOccupied(flag, m, n) {
     j = n - 1;
     //expand horizontally left
     while (j >= 0) {
-        validateFlag(flag, i, j);
+        validateFlag( i, j);
         j--;
     }
 
@@ -160,15 +182,16 @@ function isOccupied(flag, m, n) {
     j = n + 1;
     //expand horizontally right
     while (j < N) {
-        validateFlag(flag, i, j);
+        validateFlag( i, j);
         j++;
     }
 }
 
-
-function validateFlag(flag, i, j) {
-
-    if (flag) {
+function validateFlag(i, j) {
+    if(BoardMatrix[i][j].classList.contains("queen")){
+        BoardMatrix[i][j].classList.add("danger");
+    }
+    else  {
         if ((i + j) % 2 == 0) {
             BoardMatrix[i][j].classList.add("occupiedWhite");
         }
@@ -177,13 +200,13 @@ function validateFlag(flag, i, j) {
         }
 
     }
-    else {
-        if ((i + j) % 2 == 0) {
-            BoardMatrix[i][j].classList.remove("occupiedWhite");
-        }
-        else {
-            BoardMatrix[i][j].classList.remove("occupiedBlack");
-        }
-    }
+    // else {
+    //     if ((i + j) % 2 == 0) {
+    //         BoardMatrix[i][j].classList.remove("occupiedWhite");
+    //     }
+    //     else {
+    //         BoardMatrix[i][j].classList.remove("occupiedBlack");
+    //     }
+    // }
 
 }
