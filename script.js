@@ -48,6 +48,7 @@ function buildBoard() {
         str = str + "50px ";
     }
     BoardDisplay.style.gridTemplateColumns = `${str}`;
+    BoardDisplay.style.gridTemplateRows=`${str}`;
     for (let i = 0; i < n; i++) {
         let newRow = [];
         for (let j = 0; j < n; j++) {
