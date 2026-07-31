@@ -1,27 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>N Queens Visualizer</title>
     <link href="styles.css" rel="stylesheet">
 </head>
+
 <body>
-    <h1>N-Queens Visualizer</h1>
+    <h1>N-Queens<br>Visualizer</h1>
     <div id="container">
         <div id="input">
             <label for="inputNum">Queens : </label>
-            <input id="inputNum" placeholder="4-10" type="number" >
-            <input id="submit" type="submit">
+            <input id="inputNum" placeholder="4-10" type="number">
+            <input id="submit" class="button-template" type="submit">
+            <button id="reset-board-btn" class="button-template">Reset Board</button>
         </div>
         <p id="error-msg"></p>
         <button id="start-anim" class="hide">Start</button>
-        <div id="board">
+        <div id="board" >
 
         </div>
+    </div>
+    <div id="result" class="result-visible">
+        <div id="slider-btn" >></div>
+        <h2 id="result-title">Queens Placed</h2>
+        <span id="result-placeholder">-- / --</span>
+        <p id="description">Enter the Board Size</p>
     </div>
 
 
     <script src="script.js"></script>
 </body>
+
 </html>
