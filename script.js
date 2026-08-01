@@ -231,74 +231,89 @@ function clearAttackIndicators() { //simply clears all the indicators of the boa
 
 function expandSight(m, n) {   //expand the queen's sight as per chess rules (needs a bit optimization (future task))
 
-    let i = m + 1;
-    let j = n + 1;
-    //expand bottom right diagonally
-    while (i < N && j < N) {
-        markAttackedCells(i, j);
-        i++;
-        j++;
+    const DR=[[1,1],[1,-1],[-1,1],[-1,-1],
+            [1,0],[0,1],[-1,0],[0,-1]];
 
-    }
-    i = m - 1;
-    j = n - 1;
+    DR.forEach(([dm,dn])=>{
+        let i=m+dm;
+        let j=n+dn;
+        while(i<N && i>=0 && j>=0 && j<N){
+            markAttackedCells(i,j);
+            i+=dm;
+            j+=dn;
+        }
+    })
+    
 
-    //expand top left diagonally
-    while (i >= 0 && j >= 0) {
-        markAttackedCells(i, j);
-        i--;
-        j--;
-    }
 
-    i = m - 1;
-    j = n + 1;
-    //expand top right diagonally
-    while (i >= 0 && j < N) {
-        markAttackedCells(i, j);
-        i--;
-        j++;
-    }
+    // let i = m + 1;
+    // let j = n + 1;
+    // //expand bottom right diagonally
+    // while (i < N && j < N) {
+    //     markAttackedCells(i, j);
+    //     i++;
+    //     j++;
 
-    i = m + 1;
-    j = n - 1;
-    //expand  bottom left diagonally
-    while (i < N && j >= 0) {
-        markAttackedCells(i, j);
-        i++;
-        j--;
-    }
+    // }
+    // i = m - 1;
+    // j = n - 1;
 
-    i = m + 1;
-    j = n;
-    //expand vertically downwards
-    while (i < N) {
-        markAttackedCells(i, j);
-        i++;
-    }
+    // //expand top left diagonally
+    // while (i >= 0 && j >= 0) {
+    //     markAttackedCells(i, j);
+    //     i--;
+    //     j--;
+    // }
 
-    i = m - 1;
-    j = n;
-    //expand vertically upwards
-    while (i >= 0) {
-        markAttackedCells(i, j);
-        i--;
-    }
+    // i = m - 1;
+    // j = n + 1;
+    // //expand top right diagonally
+    // while (i >= 0 && j < N) {
+    //     markAttackedCells(i, j);
+    //     i--;
+    //     j++;
+    // }
 
-    i = m;
-    j = n - 1;
-    //expand horizontally left
-    while (j >= 0) {
-        markAttackedCells(i, j);
-        j--;
-    }
+    // i = m + 1;
+    // j = n - 1;
+    // //expand  bottom left diagonally
+    // while (i < N && j >= 0) {
+    //     markAttackedCells(i, j);
+    //     i++;
+    //     j--;
+    // }
 
-    i = m;
-    j = n + 1;
-    //expand horizontally right
-    while (j < N) {
-        markAttackedCells(i, j);
-        j++;
-    }
+    // i = m + 1;
+    // j = n;
+    // //expand vertically downwards
+    // while (i < N) {
+    //     markAttackedCells(i, j);
+    //     i++;
+    // }
+
+    // i = m - 1;
+    // j = n;
+    // //expand vertically upwards
+    // while (i >= 0) {
+    //     markAttackedCells(i, j);
+    //     i--;
+    // }
+
+    // i = m;
+    // j = n - 1;
+    // //expand horizontally left
+    // while (j >= 0) {
+    //     markAttackedCells(i, j);
+    //     j--;
+    // }
+
+    // i = m;
+    // j = n + 1;
+    // //expand horizontally right
+    // while (j < N) {
+    //     markAttackedCells(i, j);
+    //     j++;
+    // }
 }
 
 function markAttackedCells(i, j) {  //simply checks whether the current cell under consideration of the queen's sight involves an empty square or another queen
