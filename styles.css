@@ -179,7 +179,15 @@ input[type="number"]::-webkit-outer-spin-button{
     font-size: 3.8em;
     font-weight: bold;
 }
-
+.res-green{
+    color:rgb(100, 250, 89);
+}
+.res-red{
+    color:red;
+}
+.res-normal{
+    color:white;
+}
 #slider-btn{
     font-size: 3em;
     height: 60px;
@@ -199,6 +207,20 @@ input[type="number"]::-webkit-outer-spin-button{
 }
 #slider-btn:hover{
     background-color: rgb(27, 235, 152);
+}
+
+#description{
+    font-size: 2em;
+    margin-top:30px;
+}
+.desc-red{
+    color: red;
+}
+.desc-normal{
+    color: white;
+}
+.desc-green{
+    color: rgb(143, 255, 98);
 }
 
 .cells{

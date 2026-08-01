@@ -38,6 +38,8 @@ InputElement.addEventListener("keydown", (event) => {
         }
         else if (validateInput()) {
             Description.textContent = "Place All the Queens!";
+            Description.classList="desc-normal";
+            QueenCountDisplay.classList="res-normal";
             CurrentQueens = []; //reset current queens
             updateQueensCount();
         }
@@ -51,6 +53,8 @@ SubmitButton.addEventListener("click", () => {
     if (Number(InputElement.value) == N) return;
     else if (validateInput()) {
         Description.textContent = "Place All the Queens!";
+        Description.classList="desc-normal";
+        QueenCountDisplay.classList="res-normal";
         CurrentQueens = []; //reset current queens
         updateQueensCount();
     }
@@ -67,6 +71,8 @@ SubmitButton.addEventListener("click", () => {
 //Reset Button Logic
 ResetBoardButton.addEventListener("click", () => {
     Description.textContent = "Place All the Queens!";
+    Description.classList="desc-normal";
+    QueenCountDisplay.classList="res-normal";
     clearAttackIndicators();
     CurrentQueens.forEach((queen) => {  //remove the queens class from all current queen cells
         BoardMatrix[queen[0]][queen[1]].classList.remove("queen");
@@ -184,15 +190,18 @@ function updateQueens(target, m, n) {   //validate the queens with its count and
     updateBoardAttacks();               //updates the Attacks by currenly present Queens
 
     updateQueensCount();                //self-explanatory
-
+    QueenCountDisplay.classList="res-normal";
     if (CurrentQueens.length === N) {   //if the queens now have reached their max check whether its a win or fail
         calculateAndDisplayResult();    //then calculate and Display the result
     }
     else if (areQueensUnderAttack()) {
         Description.textContent = "Queens Are Under Attack !";
+        Description.classList="desc-red";
     }
     else {
         Description.textContent = "Place All the Queens!";
+        Description.classList="desc-normal";
+        QueenCountDisplay.classList="res-normal";
     }
     // else {
     //     Description.textContent = "Place All the Queens!";
@@ -340,9 +349,13 @@ function calculateAndDisplayResult() {
 function displayRightResult(isSolved) { //self-explantory
     if (isSolved) {
         Description.textContent = "Solved! Great Job!";
+        Description.classList="desc-green";
+        QueenCountDisplay.classList="res-green";
     }
     else {
         Description.textContent = "Failed!";
+        QueenCountDisplay.classList="res-red";
+        Description.classList="desc-red";
     }
 }
 
