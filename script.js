@@ -10,6 +10,7 @@ const QueenCountDisplay = document.getElementById("result-placeholder");  //quee
 const Description = document.getElementById("description"); //hints for the user
 const SliderButton = document.getElementById("slider-btn"); // > button
 const ResultContainer = document.getElementById("result");  //the entire right side card
+const StartAnimButton=document.getElementById("start-anim");
 
 
 //State Variables
@@ -73,12 +74,7 @@ ResetBoardButton.addEventListener("click", () => {
     Description.textContent = "Place All the Queens!";
     Description.classList="desc-normal";
     QueenCountDisplay.classList="res-normal";
-    clearAttackIndicators();
-    CurrentQueens.forEach((queen) => {  //remove the queens class from all current queen cells
-        BoardMatrix[queen[0]][queen[1]].classList.remove("queen");
-    })
-    CurrentQueens = [];  //empty queen references
-    updateQueensCount();    //update the count of queens on board
+    clearQueens();
 })
 
 
@@ -94,6 +90,22 @@ SliderButton.addEventListener("click", () => {
         SliderButton.textContent = "<";
     }
 })
+
+//Animation logic
+StartAnimButton.addEventListener("click",()=>{
+    clearQueens();
+
+})
+
+//clears on board queens and their sights
+function clearQueens(){
+    clearAttackIndicators();
+    CurrentQueens.forEach((queen) => {  //remove the queens class from all current queen cells
+        BoardMatrix[queen[0]][queen[1]].classList.remove("queen");
+    })
+    CurrentQueens = [];  //empty queen references
+    updateQueensCount();    //update the count of queens on board
+}
 
 //Calculates the number of queens on board and updates the count on the right result-card
 function updateQueensCount() {
@@ -358,4 +370,6 @@ function displayRightResult(isSolved) { //self-explantory
         Description.classList="desc-red";
     }
 }
+
+
 
