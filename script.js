@@ -18,7 +18,8 @@ let rightSideVisible = true; //boolean to check whether right side card is visib
 let BoardMatrix = [];  //saves the DOM reference of each cell in all as a matrix
 let CurrentQueens = []; //stores the position of currently onboard queens as [i,j]
 let N = BoardMatrix.length; //stores the length of board
-
+let Solutions=[];
+let PsuedoBoard=[];
 
 
 // EVENT LISTENERS SECTION
@@ -97,28 +98,36 @@ StartAnimButton.addEventListener("click", () => {
     animate();
 })
 
-async function animate() {
+function animate() {
     BoardDisplay.classList.toggle("board-disabled");
-    await solveNQueens(0,2000);
+    buildPsuedoBoard();
+    solveNQueens(0, 2000);
     BoardDisplay.classList.toggle("board-disabled");
+    console.log(Solutions);
 }
 
-async function solveNQueens(rowNo,speed) {
+function buildPsuedoBoard(){
+    for(let  i=0 ;i<N;i++){
+        let row=[];
+        for(let j=0;j<N;j++){
+            row.push(0);
+        }
+        PsuedoBoard.push(row);
+    }
+}
+
+function solveNQueens(rowNo, speed) {
     if (rowNo == N) {
-        await delay(speed);
-        return true
+        Solutions.push(PsuedoBoard);
+        return;
     }
     for (let colNo = 0; colNo < N; colNo++) {
         if (isSafeToPlace(rowNo, colNo)) {
-            updateQueens(BoardMatrix[rowNo][colNo], rowNo, colNo);
-            await delay(speed);
-            if (await solveNQueens(rowNo + 1,speed)) {
-                return true;
-            }
-            updateQueens(BoardMatrix[rowNo][colNo], rowNo, colNo);
+            PsuedoBoard[rowNo][colNo]=1;
+            solveNQueens(rowNo + 1, speed); 
+            PsuedoBoard[rowNo][colNo]=0;
         }
     }
-    return false;
 }
 
 /**
@@ -136,7 +145,7 @@ function isSafeToPlace(m, n) {
         let i = m + dm;
         let j = n + dn;
         while (i >= 0 && j >= 0 && i < N && j < N) {
-            if (BoardMatrix[i][j].classList.contains("queen")) {
+            if (PsuedoBoard[i][j]==1) {
                 isSafe = false;
             }
             i += dm;
