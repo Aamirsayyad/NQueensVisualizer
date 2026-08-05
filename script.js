@@ -118,7 +118,7 @@ function buildPsuedoBoard(){
 
 function solveNQueens(rowNo, speed) {
     if (rowNo == N) {
-        Solutions.push(PsuedoBoard);
+        Solutions.push(PsuedoBoard.map((row)=>[...row]));
         return;
     }
     for (let colNo = 0; colNo < N; colNo++) {
