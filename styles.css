@@ -131,7 +131,9 @@ input[type="number"]::-webkit-outer-spin-button{
     
 } */
 
-
+.board-disabled {
+    pointer-events: none;
+}
 .result-visible{
     transition: 0.5s ease-in-out;
     background-color: hsla(87, 91%, 26%, 0.429);

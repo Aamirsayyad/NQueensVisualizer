@@ -10,7 +10,7 @@ const QueenCountDisplay = document.getElementById("result-placeholder");  //quee
 const Description = document.getElementById("description"); //hints for the user
 const SliderButton = document.getElementById("slider-btn"); // > button
 const ResultContainer = document.getElementById("result");  //the entire right side card
-const StartAnimButton=document.getElementById("start-anim");
+const StartAnimButton = document.getElementById("start-anim");
 
 
 //State Variables
@@ -39,8 +39,8 @@ InputElement.addEventListener("keydown", (event) => {
         }
         else if (validateInput()) {
             Description.textContent = "Place All the Queens!";
-            Description.classList="desc-normal";
-            QueenCountDisplay.classList="res-normal";
+            Description.classList = "desc-normal";
+            QueenCountDisplay.classList = "res-normal";
             CurrentQueens = []; //reset current queens
             updateQueensCount();
         }
@@ -54,8 +54,8 @@ SubmitButton.addEventListener("click", () => {
     if (Number(InputElement.value) == N) return;
     else if (validateInput()) {
         Description.textContent = "Place All the Queens!";
-        Description.classList="desc-normal";
-        QueenCountDisplay.classList="res-normal";
+        Description.classList = "desc-normal";
+        QueenCountDisplay.classList = "res-normal";
         CurrentQueens = []; //reset current queens
         updateQueensCount();
     }
@@ -72,8 +72,8 @@ SubmitButton.addEventListener("click", () => {
 //Reset Button Logic
 ResetBoardButton.addEventListener("click", () => {
     Description.textContent = "Place All the Queens!";
-    Description.classList="desc-normal";
-    QueenCountDisplay.classList="res-normal";
+    Description.classList = "desc-normal";
+    QueenCountDisplay.classList = "res-normal";
     clearQueens();
 })
 
@@ -92,13 +92,74 @@ SliderButton.addEventListener("click", () => {
 })
 
 //Animation logic
-StartAnimButton.addEventListener("click",()=>{
+StartAnimButton.addEventListener("click", () => {
     clearQueens();
-
+    animate();
 })
 
+async function animate() {
+    BoardDisplay.classList.toggle("board-disabled");
+    await solveNQueens(0,2000);
+    BoardDisplay.classList.toggle("board-disabled");
+}
+
+async function solveNQueens(rowNo,speed) {
+    if (rowNo == N) {
+        await delay(speed);
+        return true
+    }
+    for (let colNo = 0; colNo < N; colNo++) {
+        if (isSafeToPlace(rowNo, colNo)) {
+            updateQueens(BoardMatrix[rowNo][colNo], rowNo, colNo);
+            await delay(speed);
+            if (await solveNQueens(rowNo + 1,speed)) {
+                return true;
+            }
+            updateQueens(BoardMatrix[rowNo][colNo], rowNo, colNo);
+        }
+    }
+    return false;
+}
+
+/**
+ * Checks whether placing Queen on mth row and nth column is safe
+ * @param {number} m 
+ * @param {number} n 
+ * @returns {boolean}
+ */
+function isSafeToPlace(m, n) {
+    const DR = [[-1, 1], [-1, -1],
+    [-1, 0]];
+    let isSafe = true;
+    DR.forEach(([dm, dn]) => {
+
+        let i = m + dm;
+        let j = n + dn;
+        while (i >= 0 && j >= 0 && i < N && j < N) {
+            if (BoardMatrix[i][j].classList.contains("queen")) {
+                isSafe = false;
+            }
+            i += dm;
+            j += dn;
+        }
+    })
+    return isSafe;
+}
+
+/**
+ * Generates a delay in miliseconds provided 
+ * @param {number} ms 
+ * @returns {Promise}
+ */
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 //clears on board queens and their sights
-function clearQueens(){
+/**
+ * Clears all Queens from the board
+ */
+function clearQueens() {
     clearAttackIndicators();
     CurrentQueens.forEach((queen) => {  //remove the queens class from all current queen cells
         BoardMatrix[queen[0]][queen[1]].classList.remove("queen");
@@ -108,10 +169,17 @@ function clearQueens(){
 }
 
 //Calculates the number of queens on board and updates the count on the right result-card
+/**
+ * Updates the Current Queen Count on board
+ */
 function updateQueensCount() {
     QueenCountDisplay.textContent = `${CurrentQueens.length} / ${N}`;
 }
 // INPUT VALIDATION
+/**
+ * Validates user input
+ * @returns {boolean}
+ */
 function validateInput() {  //used to Build Board only when the input is within valid range
     const value = Number(InputElement.value);
     if (value <= 3) {
@@ -131,7 +199,11 @@ function validateInput() {  //used to Build Board only when the input is within 
     return false;                                       //validation failed 
 }
 
+
 // BUILDING BOARD
+/**
+ * Simply builds a fresh board
+ */
 function buildBoard() {
     CurrentQueens = [];                                 //clear the queen references as entire board is being cleared
     BoardDisplay.replaceChildren("");                   //clear the grid first
@@ -164,6 +236,9 @@ function buildBoard() {
     addCellEventListeners();
 }
 
+/**
+ * Adds individual EventListeners to every cell on the board
+ */
 function addCellEventListeners() { //add event listeners to all cells on the board
     for (let i = 0; i < N; i++) {
         for (let j = 0; j < N; j++) {
@@ -174,6 +249,15 @@ function addCellEventListeners() { //add event listeners to all cells on the boa
     }
 }
 
+
+/**
+ * Main Driver Function
+ * | Toggles Queen's State and updates the board
+ * @param {Element} target 
+ * @param {number} m 
+ * @param {number} n 
+ * @returns 
+ */
 function updateQueens(target, m, n) {   //validate the queens with its count and provides the toggling behaviour
     if (!target.classList.contains("queen") && CurrentQueens.length === N) { // check whether we're out of Queens
         return;
@@ -202,18 +286,18 @@ function updateQueens(target, m, n) {   //validate the queens with its count and
     updateBoardAttacks();               //updates the Attacks by currenly present Queens
 
     updateQueensCount();                //self-explanatory
-    QueenCountDisplay.classList="res-normal";
+    QueenCountDisplay.classList = "res-normal";
     if (CurrentQueens.length === N) {   //if the queens now have reached their max check whether its a win or fail
         calculateAndDisplayResult();    //then calculate and Display the result
     }
     else if (areQueensUnderAttack()) {
         Description.textContent = "Queens Are Under Attack !";
-        Description.classList="desc-red";
+        Description.classList = "desc-red";
     }
     else {
         Description.textContent = "Place All the Queens!";
-        Description.classList="desc-normal";
-        QueenCountDisplay.classList="res-normal";
+        Description.classList = "desc-normal";
+        QueenCountDisplay.classList = "res-normal";
     }
     // else {
     //     Description.textContent = "Place All the Queens!";
@@ -221,6 +305,10 @@ function updateQueens(target, m, n) {   //validate the queens with its count and
 
 }
 
+/**
+ * Checks if any Queen contains the "danger" class
+ * @returns {boolean}
+ */
 function areQueensUnderAttack() { //by simply checking whether any queen contain danger class
     let areThey = false;          //assumption
     CurrentQueens.forEach(([row, col]) => {
@@ -231,6 +319,9 @@ function areQueensUnderAttack() { //by simply checking whether any queen contain
     return areThey;               //return inference
 }
 
+/**
+ * Clears the Board and Callsback to expandSight() for each Queen
+ */
 function updateBoardAttacks() {
     clearAttackIndicators();                //clear board indicators so the updated board have proper queen sights
     CurrentQueens.forEach((value) => {
@@ -240,6 +331,9 @@ function updateBoardAttacks() {
     })
 }
 
+/**
+ * Clears only the Queen's Vision
+ */
 function clearAttackIndicators() { //simply clears all the indicators of the board entirely
     for (let i = 0; i < N; i++) {
         for (let j = 0; j < N; j++) {
@@ -250,93 +344,32 @@ function clearAttackIndicators() { //simply clears all the indicators of the boa
     }
 }
 
+/**
+ * Expand a Queen's vision (Placed on mth row and nth column) in all directions
+ * @param {number} m 
+ * @param {number} n 
+ */
 function expandSight(m, n) {   //expand the queen's sight as per chess rules (needs a bit optimization (future task))
 
-    const DR=[[1,1],[1,-1],[-1,1],[-1,-1],
-            [1,0],[0,1],[-1,0],[0,-1]];
+    const DR = [[1, 1], [1, -1], [-1, 1], [-1, -1],
+    [1, 0], [0, 1], [-1, 0], [0, -1]];
 
-    DR.forEach(([dm,dn])=>{
-        let i=m+dm;
-        let j=n+dn;
-        while(i<N && i>=0 && j>=0 && j<N){
-            markAttackedCells(i,j);
-            i+=dm;
-            j+=dn;
+    DR.forEach(([dm, dn]) => {
+        let i = m + dm;
+        let j = n + dn;
+        while (i < N && i >= 0 && j >= 0 && j < N) {
+            markAttackedCells(i, j);
+            i += dm;
+            j += dn;
         }
     })
-    
-
-
-    // let i = m + 1;
-    // let j = n + 1;
-    // //expand bottom right diagonally
-    // while (i < N && j < N) {
-    //     markAttackedCells(i, j);
-    //     i++;
-    //     j++;
-
-    // }
-    // i = m - 1;
-    // j = n - 1;
-
-    // //expand top left diagonally
-    // while (i >= 0 && j >= 0) {
-    //     markAttackedCells(i, j);
-    //     i--;
-    //     j--;
-    // }
-
-    // i = m - 1;
-    // j = n + 1;
-    // //expand top right diagonally
-    // while (i >= 0 && j < N) {
-    //     markAttackedCells(i, j);
-    //     i--;
-    //     j++;
-    // }
-
-    // i = m + 1;
-    // j = n - 1;
-    // //expand  bottom left diagonally
-    // while (i < N && j >= 0) {
-    //     markAttackedCells(i, j);
-    //     i++;
-    //     j--;
-    // }
-
-    // i = m + 1;
-    // j = n;
-    // //expand vertically downwards
-    // while (i < N) {
-    //     markAttackedCells(i, j);
-    //     i++;
-    // }
-
-    // i = m - 1;
-    // j = n;
-    // //expand vertically upwards
-    // while (i >= 0) {
-    //     markAttackedCells(i, j);
-    //     i--;
-    // }
-
-    // i = m;
-    // j = n - 1;
-    // //expand horizontally left
-    // while (j >= 0) {
-    //     markAttackedCells(i, j);
-    //     j--;
-    // }
-
-    // i = m;
-    // j = n + 1;
-    // //expand horizontally right
-    // while (j < N) {
-    //     markAttackedCells(i, j);
-    //     j++;
-    // }
 }
 
+/**
+ * Marks the ith row and jth column as occupied, under a queen's sight or danger
+ * @param {number} i 
+ * @param {number} j 
+ */
 function markAttackedCells(i, j) {  //simply checks whether the current cell under consideration of the queen's sight involves an empty square or another queen
     if (BoardMatrix[i][j].classList.contains("queen")) {
         BoardMatrix[i][j].classList.add("danger");
@@ -353,21 +386,28 @@ function markAttackedCells(i, j) {  //simply checks whether the current cell und
 
 }
 
+/**
+ * Validates and Displays Result 
+ */
 function calculateAndDisplayResult() {
     let isSolved = !areQueensUnderAttack();
     displayRightResult(isSolved); //callback to the actuall displaying function
 }
 
+/**
+ * Displays result to the right card
+ * @param {boolean} isSolved 
+ */
 function displayRightResult(isSolved) { //self-explantory
     if (isSolved) {
         Description.textContent = "Solved! Great Job!";
-        Description.classList="desc-green";
-        QueenCountDisplay.classList="res-green";
+        Description.classList = "desc-green";
+        QueenCountDisplay.classList = "res-green";
     }
     else {
         Description.textContent = "Failed!";
-        QueenCountDisplay.classList="res-red";
-        Description.classList="desc-red";
+        QueenCountDisplay.classList = "res-red";
+        Description.classList = "desc-red";
     }
 }
 
