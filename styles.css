@@ -110,18 +110,34 @@ input[type="number"]::-webkit-outer-spin-button{
 }
 
 #start-anim{
+    background-color: white;
+}
+#next-sol{
+    background-color: rgb(100, 7, 221);
+    color:white;
+}
+#next-sol:active{
+    background-color: rgb(187, 141, 247);
+}
+#btn-container{
+    display: flex;
+    flex-direction: row;
+    gap:15px;
+
+}
+.btn-class{
     border: none;
     font-weight: bold;
-    background-color: white;
     font-size: 1.3em;
-    padding-bottom: 3px;
+    padding-bottom: 4px;
     border-radius: 10px;
     text-align: center;
-    height: 20px;
+    height: 23px;
     width: 50px;
     justify-content: center;
     cursor: pointer;
 }
+
 #start-anim:active{
     background-color: rgb(2, 2, 2);
     color:white

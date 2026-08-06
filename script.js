@@ -11,6 +11,7 @@ const Description = document.getElementById("description"); //hints for the user
 const SliderButton = document.getElementById("slider-btn"); // > button
 const ResultContainer = document.getElementById("result");  //the entire right side card
 const StartAnimButton = document.getElementById("start-anim");
+const NextButton=document.getElementById("next-sol");
 
 
 //State Variables
@@ -35,10 +36,11 @@ let PsuedoBoard=[];
 //Enter Event Listener
 InputElement.addEventListener("keydown", (event) => {
     if (event.key === "Enter") { //only trigger for "ENTER" press
-        if (Number(InputElement.value) == N) {
+        if (Number(InputElement.value) == N && ErorrDisplay.textContent==="") {
             return;
         }
         else if (validateInput()) {
+            NextButton.classList.replace("show","hide");
             Description.textContent = "Place All the Queens!";
             Description.classList = "desc-normal";
             QueenCountDisplay.classList = "res-normal";
@@ -54,6 +56,7 @@ SubmitButton.addEventListener("click", () => {
 
     if (Number(InputElement.value) == N) return;
     else if (validateInput()) {
+        NextButton.classList.replace("show","hide");
         Description.textContent = "Place All the Queens!";
         Description.classList = "desc-normal";
         QueenCountDisplay.classList = "res-normal";
@@ -62,6 +65,10 @@ SubmitButton.addEventListener("click", () => {
     }
 });
 
+
+StartButton.addEventListener("click",()=>{
+    NextButton.classList.replace("hide","show");
+})
 //Reset Button logic explained breifly
 /*
     State explanation: When reset it pressed , the right side is simply changed, the attack indicators on the
@@ -103,9 +110,12 @@ function animate() {
     buildPsuedoBoard();
     solveNQueens(0, 2000);
     BoardDisplay.classList.toggle("board-disabled");
-    console.log(Solutions);
+    
 }
 
+/**
+ * Builds a reference board for displaying solutions 
+ */
 function buildPsuedoBoard(){
     for(let  i=0 ;i<N;i++){
         let row=[];
@@ -116,6 +126,12 @@ function buildPsuedoBoard(){
     }
 }
 
+/**
+ * Pushes all N Queens solution to Solution's Array in PseudoBoard's format
+ * @param {number} rowNo 
+ * @param {number} speed 
+ * @returns {void}
+ */
 function solveNQueens(rowNo, speed) {
     if (rowNo == N) {
         Solutions.push(PsuedoBoard.map((row)=>[...row]));
@@ -192,11 +208,13 @@ function updateQueensCount() {
 function validateInput() {  //used to Build Board only when the input is within valid range
     const value = Number(InputElement.value);
     if (value <= 3) {
+        NextButton.classList.replace("show","hide");
         ErorrDisplay.textContent = "Solution Doesn't Exist!";
         StartButton.classList.replace("show", "hide");
     }
     else if (value > 10) {
         StartButton.classList.replace("show", "hide");
+        NextButton.classList.replace("show","hide");
         ErorrDisplay.textContent = "Thinking Capacity exceeded!";
     }
     else {
