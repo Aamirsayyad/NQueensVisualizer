@@ -10,8 +10,10 @@ const QueenCountDisplay = document.getElementById("result-placeholder");  //quee
 const Description = document.getElementById("description"); //hints for the user
 const SliderButton = document.getElementById("slider-btn"); // > button
 const ResultContainer = document.getElementById("result");  //the entire right side card
-const StartAnimButton = document.getElementById("start-anim");
-const NextButton=document.getElementById("next-sol");
+const NextButton = document.getElementById("next-sol");
+const SolutionNoText = document.getElementById("anim-display");
+const CurrSolNoDisplay = document.getElementById("sol-no");
+const TotalSolNoDisplay = document.getElementById("totalSol-no");
 
 
 //State Variables
@@ -19,8 +21,10 @@ let rightSideVisible = true; //boolean to check whether right side card is visib
 let BoardMatrix = [];  //saves the DOM reference of each cell in all as a matrix
 let CurrentQueens = []; //stores the position of currently onboard queens as [i,j]
 let N = BoardMatrix.length; //stores the length of board
-let Solutions=[];
-let PsuedoBoard=[];
+let Solutions = [];
+let PsuedoBoard = [];
+let currSolIdx = -1;
+let animationToken=0;
 
 
 // EVENT LISTENERS SECTION
@@ -36,11 +40,11 @@ let PsuedoBoard=[];
 //Enter Event Listener
 InputElement.addEventListener("keydown", (event) => {
     if (event.key === "Enter") { //only trigger for "ENTER" press
-        if (Number(InputElement.value) == N && ErorrDisplay.textContent==="") {
+        if (Number(InputElement.value) == N && ErorrDisplay.textContent === "") {
             return;
         }
         else if (validateInput()) {
-            NextButton.classList.replace("show","hide");
+            NextButton.classList.replace("show", "hide");
             Description.textContent = "Place All the Queens!";
             Description.classList = "desc-normal";
             QueenCountDisplay.classList = "res-normal";
@@ -56,7 +60,7 @@ SubmitButton.addEventListener("click", () => {
 
     if (Number(InputElement.value) == N) return;
     else if (validateInput()) {
-        NextButton.classList.replace("show","hide");
+        NextButton.classList.replace("show", "hide");
         Description.textContent = "Place All the Queens!";
         Description.classList = "desc-normal";
         QueenCountDisplay.classList = "res-normal";
@@ -65,10 +69,6 @@ SubmitButton.addEventListener("click", () => {
     }
 });
 
-
-StartButton.addEventListener("click",()=>{
-    NextButton.classList.replace("hide","show");
-})
 //Reset Button logic explained breifly
 /*
     State explanation: When reset it pressed , the right side is simply changed, the attack indicators on the
@@ -79,10 +79,14 @@ StartButton.addEventListener("click",()=>{
 
 //Reset Button Logic
 ResetBoardButton.addEventListener("click", () => {
+
     Description.textContent = "Place All the Queens!";
     Description.classList = "desc-normal";
     QueenCountDisplay.classList = "res-normal";
     clearQueens();
+    currSolIdx = -1;
+    SolutionNoText.classList.replace("show", "hide");
+    NextButton.classList.replace("show", "hide");
 })
 
 
@@ -100,26 +104,60 @@ SliderButton.addEventListener("click", () => {
 })
 
 //Animation logic
-StartAnimButton.addEventListener("click", () => {
+StartButton.addEventListener("click", async () => {
+    animationToken++;
+    Solutions = [];
+    currSolIdx=-1;
+    NextButton.classList.replace("hide", "show");
     clearQueens();
-    animate();
+    generateSolutions();
+    currSolIdx= (currSolIdx+1 )%Solutions.length;
+    SolutionNoText.classList.replace("hide", "show");
+    await animate();
+    
+});
+
+NextButton.addEventListener("click", async () => {
+    animationToken++;
+    currSolIdx= (currSolIdx+1 )%Solutions.length;
+    clearQueens();
+    await animate();
 })
 
-function animate() {
-    BoardDisplay.classList.toggle("board-disabled");
-    buildPsuedoBoard();
-    solveNQueens(0, 2000);
-    BoardDisplay.classList.toggle("board-disabled");
+async function animate() {
     
+    CurrSolNoDisplay.textContent = `${currSolIdx + 1}`;
+    TotalSolNoDisplay.textContent = `${Solutions.length}`;
+    BoardDisplay.classList.add("board-disabled");
+    const assignedToken=animationToken;
+    for (let i = 0; i < N; i++) {
+        for (let j = 0; j < N; j++) {
+            if (assignedToken !== animationToken) return;
+            if (Solutions[currSolIdx][i][j] === 1) {
+                updateQueens(BoardMatrix[i][j], i, j);
+                await delay(700);
+            }
+        }
+    }
+    BoardDisplay.classList.remove("board-disabled");
+}
+
+function generateSolutions() {
+
+    buildPsuedoBoard();
+    solveNQueens(0);
+    console.log(Solutions);
+
 }
 
 /**
  * Builds a reference board for displaying solutions 
  */
-function buildPsuedoBoard(){
-    for(let  i=0 ;i<N;i++){
-        let row=[];
-        for(let j=0;j<N;j++){
+function buildPsuedoBoard() {
+    PsuedoBoard = [];
+    for (let i = 0; i < N; i++) {
+        let row = [];
+        for (let j = 0; j < N; j++) {
             row.push(0);
         }
         PsuedoBoard.push(row);
@@ -129,19 +167,18 @@ function buildPsuedoBoard(){
 /**
  * Pushes all N Queens solution to Solution's Array in PseudoBoard's format
  * @param {number} rowNo 
- * @param {number} speed 
  * @returns {void}
  */
-function solveNQueens(rowNo, speed) {
+function solveNQueens(rowNo) {
     if (rowNo == N) {
-        Solutions.push(PsuedoBoard.map((row)=>[...row]));
+        Solutions.push(PsuedoBoard.map((row) => [...row]));
         return;
     }
     for (let colNo = 0; colNo < N; colNo++) {
         if (isSafeToPlace(rowNo, colNo)) {
-            PsuedoBoard[rowNo][colNo]=1;
-            solveNQueens(rowNo + 1, speed); 
-            PsuedoBoard[rowNo][colNo]=0;
+            PsuedoBoard[rowNo][colNo] = 1;
+            solveNQueens(rowNo + 1);
+            PsuedoBoard[rowNo][colNo] = 0;
         }
     }
 }
@@ -161,7 +198,7 @@ function isSafeToPlace(m, n) {
         let i = m + dm;
         let j = n + dn;
         while (i >= 0 && j >= 0 && i < N && j < N) {
-            if (PsuedoBoard[i][j]==1) {
+            if (PsuedoBoard[i][j] == 1) {
                 isSafe = false;
             }
             i += dm;
@@ -208,21 +245,27 @@ function updateQueensCount() {
 function validateInput() {  //used to Build Board only when the input is within valid range
     const value = Number(InputElement.value);
     if (value <= 3) {
-        NextButton.classList.replace("show","hide");
+        NextButton.classList.replace("show", "hide");
         ErorrDisplay.textContent = "Solution Doesn't Exist!";
         StartButton.classList.replace("show", "hide");
     }
     else if (value > 10) {
         StartButton.classList.replace("show", "hide");
-        NextButton.classList.replace("show","hide");
+        NextButton.classList.replace("show", "hide");
         ErorrDisplay.textContent = "Thinking Capacity exceeded!";
     }
     else {
         ErorrDisplay.textContent = "";
         StartButton.classList.replace("hide", "show");  //show the animation start button
         buildBoard();                                   //validation successful now build the board 
+        currSolIdx = -1;
+        SolutionNoText.classList.replace("show", "hide");
+        NextButton.classList.replace("show", "hide")
         return true;                                    //validation success
     }
+    currSolIdx = -1;
+    SolutionNoText.classList.replace("show", "hide");
+    NextButton.classList.replace("show", "hide")
     return false;                                       //validation failed 
 }
 
